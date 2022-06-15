@@ -131,7 +131,7 @@ void message::get(int16_t& integer, size_t const part) const
 	assert(sizeof(int16_t) == size(part));
 
 	uint16_t const* network_order = static_cast<uint16_t const*>(raw_data(part));
-	integer = static_cast<int16_t>(ntohs(*network_order));
+	integer = static_cast<int16_t>(*network_order);
 }
 
 void message::get(int32_t& integer, size_t const part) const
@@ -139,7 +139,7 @@ void message::get(int32_t& integer, size_t const part) const
 	assert(sizeof(int32_t) == size(part));
 
 	uint32_t const* network_order = static_cast<uint32_t const*>(raw_data(part));
-	integer = static_cast<int32_t>(htonl(*network_order));
+	integer = static_cast<int32_t>(*network_order);
 }
 
 void message::get(int64_t& integer, size_t const part) const
@@ -147,7 +147,7 @@ void message::get(int64_t& integer, size_t const part) const
 	assert(sizeof(int64_t) == size(part));
 
 	uint64_t const* network_order = static_cast<uint64_t const*>(raw_data(part));
-	integer = static_cast<int64_t>(htonll(*network_order));
+	integer = static_cast<int64_t>(*network_order);
 }
 
 void message::get(signal &sig, size_t const part) const
@@ -171,40 +171,35 @@ void message::get(uint16_t& unsigned_integer, size_t const part) const
 {
 	assert(sizeof(uint16_t) == size(part));
 
-	uint16_t const* network_order = static_cast<uint16_t const*>(raw_data(part));
-	unsigned_integer = ntohs(*network_order);
+	unsigned_integer = *static_cast<uint16_t const*>(raw_data(part));
 }
 
 void message::get(uint32_t& unsigned_integer, size_t const part) const
 {
 	assert(sizeof(uint32_t) == size(part));
 
-	uint32_t const* network_order = static_cast<uint32_t const*>(raw_data(part));
-	unsigned_integer = ntohl(*network_order);
+	unsigned_integer = *static_cast<uint32_t const*>(raw_data(part));
 }
 
 void message::get(uint64_t& unsigned_integer, size_t const part) const
 {
 	assert(sizeof(uint64_t) == size(part));
 
-	uint64_t const* network_order = static_cast<uint64_t const*>(raw_data(part));
-	unsigned_integer = ntohll(*network_order);
+	unsigned_integer = *static_cast<uint64_t const*>(raw_data(part));
 }
 
 void message::get(float& floating_point, size_t const part) const
 {
 	assert(sizeof(float) == size(part));
 
-	float const* network_order = static_cast<float const*>(raw_data(part));
-	floating_point = zmqpp::ntohf(*network_order);
+	floating_point = *static_cast<float const*>(raw_data(part));
 }
 
 void message::get(double& double_precision, size_t const part) const
 {
 	assert(sizeof(double) == size(part));
 
-	double const* network_order = static_cast<double const*>(raw_data(part));
-	double_precision = zmqpp::ntohd(*network_order);
+	double_precision = *static_cast<double const*>(raw_data(part));
 }
 
 void message::get(bool& boolean, size_t const part) const
@@ -230,7 +225,7 @@ message& message::operator<<(int8_t const integer)
 
 message& message::operator<<(int16_t const integer)
 {
-	uint16_t network_order = htons(static_cast<uint16_t>(integer));
+	uint16_t network_order = static_cast<uint16_t>(integer);
 	add_raw(reinterpret_cast<void const*>(&network_order), sizeof(uint16_t));
 
 	return *this;
@@ -238,7 +233,7 @@ message& message::operator<<(int16_t const integer)
 
 message& message::operator<<(int32_t const integer)
 {
-	uint32_t network_order = htonl(static_cast<uint32_t>(integer));
+	uint32_t network_order = static_cast<uint32_t>(integer);
 	add_raw(reinterpret_cast<void const*>(&network_order), sizeof(uint32_t));
 
 	return *this;
@@ -246,7 +241,7 @@ message& message::operator<<(int32_t const integer)
 
 message& message::operator<<(int64_t const integer)
 {
-	uint64_t network_order = htonll(static_cast<uint64_t>(integer));
+	uint64_t network_order = static_cast<uint64_t>(integer);
 	add_raw(reinterpret_cast<void const*>(&network_order), sizeof(uint64_t));
 
 	return *this;
@@ -265,24 +260,21 @@ message& message::operator<<(uint8_t const unsigned_integer)
 
 message& message::operator<<(uint16_t const unsigned_integer)
 {
-	uint16_t network_order = htons(unsigned_integer);
-	add_raw(reinterpret_cast<void const*>(&network_order), sizeof(uint16_t));
+	add_raw(reinterpret_cast<void const*>(&unsigned_integer), sizeof(uint16_t));
 
 	return *this;
 }
 
 message& message::operator<<(uint32_t const unsigned_integer)
 {
-	uint32_t network_order = htonl(unsigned_integer);
-	add_raw(reinterpret_cast<void const*>(&network_order), sizeof(uint32_t));
+	add_raw(reinterpret_cast<void const*>(&unsigned_integer), sizeof(uint32_t));
 
 	return *this;
 }
 
 message& message::operator<<(uint64_t const unsigned_integer)
 {
-	uint64_t network_order = htonll(unsigned_integer);
-	add_raw(reinterpret_cast<void const*>(&network_order), sizeof(uint64_t));
+	add_raw(reinterpret_cast<void const*>(&unsigned_integer), sizeof(uint64_t));
 
 	return *this;
 }
@@ -291,8 +283,7 @@ message& message::operator<<(float const floating_point)
 {
 	assert(sizeof(float) == 4);
 
-	float network_order = zmqpp::htonf(floating_point);
-	add_raw(&network_order, sizeof(float));
+	add_raw(&floating_point, sizeof(float));
 
 	return *this;
 }
@@ -301,8 +292,7 @@ message& message::operator<<(double const double_precision)
 {
 	assert(sizeof(double) == 8);
 
-	double network_order = zmqpp::htond(double_precision);
-	add_raw(&network_order, sizeof(double));
+	add_raw(&double_precision, sizeof(double));
 
 	return *this;
 }
@@ -339,20 +329,17 @@ void message::push_front(int8_t const integer)
 
 void message::push_front(int16_t const integer)
 {
-	uint16_t network_order = htons(static_cast<uint16_t>(integer));
-	push_front(&network_order, sizeof(uint16_t));
+	push_front(&integer, sizeof(uint16_t));
 }
 
 void message::push_front(int32_t const integer)
 {
-	uint32_t network_order = htonl(static_cast<uint32_t>(integer));
-	push_front(&network_order, sizeof(uint32_t));
+	push_front(&integer, sizeof(uint32_t));
 }
 
 void message::push_front(int64_t const integer)
 {
-	uint64_t network_order = htonll(static_cast<uint64_t>(integer));
-	push_front(&network_order, sizeof(uint64_t));
+	push_front(&integer, sizeof(uint64_t));
 }
 
 void message::push_front(signal const sig)
@@ -367,36 +354,31 @@ void message::push_front(uint8_t const unsigned_integer)
 
 void message::push_front(uint16_t const unsigned_integer)
 {
-	uint16_t network_order = htons(unsigned_integer);
-	push_front(&network_order, sizeof(uint16_t));
+	push_front(&unsigned_integer, sizeof(uint16_t));
 }
 
 void message::push_front(uint32_t const unsigned_integer)
 {
-	uint32_t network_order = htonl(unsigned_integer);
-	push_front(&network_order, sizeof(uint32_t));
+	push_front(&unsigned_integer, sizeof(uint32_t));
 }
 
 void message::push_front(uint64_t const unsigned_integer)
 {
-	uint64_t network_order = htonll(unsigned_integer);
-	push_front(&network_order, sizeof(uint64_t));
+	push_front(&unsigned_integer, sizeof(uint64_t));
 }
 
 void message::push_front(float const floating_point)
 {
 	assert(sizeof(float) == 4);
 
-	float network_order = zmqpp::htonf(floating_point);
-	push_front(&network_order, sizeof(float));
+	push_front(&floating_point, sizeof(float));
 }
 
 void message::push_front(double const double_precision)
 {
 	assert(sizeof(double) == 8);
 
-	double network_order = zmqpp::htond(double_precision);
-	push_front(&network_order, sizeof(double));
+	push_front(&double_precision, sizeof(double));
 }
 
 void message::push_front(bool const boolean)
