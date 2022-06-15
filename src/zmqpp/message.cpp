@@ -317,13 +317,13 @@ message& message::operator<<(bool const boolean)
 
 message& message::operator<<(char const* c_string)
 {
-	add_raw(reinterpret_cast<void const*>(c_string), strlen(c_string));
+	add_raw(reinterpret_cast<void const*>(c_string), 1 + strlen(c_string));
 	return *this;
 }
 
 message& message::operator<<(std::string const& string)
 {
-	add_raw(reinterpret_cast<void const*>(string.data()), string.size());
+	add_raw(reinterpret_cast<void const*>(string.data()), 1 + string.size());
 	return *this;
 }
 
@@ -407,12 +407,12 @@ void message::push_front(bool const boolean)
 
 void message::push_front(char const* c_string)
 {
-	push_front(c_string, strlen(c_string));
+	push_front(c_string, 1 + strlen(c_string));
 }
 
 void message::push_front(std::string const& string)
 {
-	push_front(string.data(), string.size());
+	push_front(string.data(), 1 + string.size());
 }
 
 void message::pop_front()
