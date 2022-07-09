@@ -237,6 +237,10 @@ public:
 				   data_size, ffn, hint);
 	}
 
+        char* allocate(size_t data_size) {
+          return reinterpret_cast<char*>(const_cast<void*>(_parts.emplace_back(data_size).data()));
+        }
+
 #if (ZMQ_VERSION_MAJOR >= 4) && ((ZMQ_VERSION_MAJOR >= 2) && ZMQ_BUILD_DRAFT_API)
 	/**
 	 * Specify a group for the message to be sent via radio
